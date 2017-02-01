@@ -5,9 +5,9 @@ import { NavController } from 'ionic-angular';
 import { TrytonProvider } from '../providers/tryton-provider'
 import { EncodeJSONRead } from '../json/encode-json-read'
 // Models
-import { User, UserSession } from '../../models/user';
-import { Party } from '../../models/party'
-import { Location } from '../../models/location'
+import { User, UserSession } from '../../models/interfaces/user';
+import { Party } from '../../models/interfaces/party'
+import { Location } from '../../models/interfaces/location'
 // Pages
 import { MainMenuPage} from '../../pages/main-menu/main-menu'
 
@@ -32,7 +32,7 @@ export class TrytonLoginPage {
 		public session_service : SessionService,
 		public locker : Locker,
 		public tryton_provider: TrytonProvider,
-    public navCtrl: NavController
+    	public navCtrl: NavController
 		) {
     }
 
