@@ -68,6 +68,7 @@ export class TrytonLoginPage {
   			this.user_session.database = this.database;
 			  console.log("User session", this.user_session);
 			  //this.get_user_data();
+			  this.navCtrl.push(MainMenuPage)
 		  },
 		  err => {
 			  alert("Incorrect username or password")
