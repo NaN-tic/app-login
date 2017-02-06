@@ -27,13 +27,15 @@ export class TrytonLoginPage {
     party_response: Party[];
     location_response: Location[];
     driver = this.locker.useDriver(Locker.DRIVERS.LOCAL)
+		database: string = ''
 
 	constructor(
 		public session_service : SessionService,
 		public locker : Locker,
 		public tryton_provider: TrytonProvider,
-    	public navCtrl: NavController
+    public navCtrl: NavController
 		) {
+
     }
 
   /**
@@ -46,7 +48,7 @@ export class TrytonLoginPage {
                 userId: this.locker.get('userId'),
                 sessionId: this.locker.get('sessionId'),
             }
-            this.get_user_data();
+            //this.get_user_data();
         }
     }
 
@@ -58,14 +60,14 @@ export class TrytonLoginPage {
    */
 	public login(event, username: string, password: string) {
 		console.log("Starting loggin procedure")
-		this.session_service.doLogin('mifarma_task', username, password)
+		this.session_service.doLogin(this.database, username, password)
 		.subscribe(
   		data => {
   			console.log("Login correct", data);
   			this.user_session = data;
-  			this.user_session.database = 'mifarma_task';
+  			this.user_session.database = this.database;
 			  console.log("User session", this.user_session);
-			  this.get_user_data();
+			  //this.get_user_data();
 		  },
 		  err => {
 			  alert("Incorrect username or password")
@@ -80,18 +82,16 @@ export class TrytonLoginPage {
    * Gets the following data from the current user:
    * name, employee, employee party and language
    */
+  // TODO: Remove this and move it to company-specific files
 	public get_user_data(){
 		console.log("Getting user data for session")
-    // Tests
-		//this.get_party_data()
-    //this.set_party_data()
 
     let json_constructor = new EncodeJSONRead;
     let userId = Number(this.user_session.userId);
     let method = "res.user";
     let domain = "[" + json_constructor.createDomain('id', '=', userId) + "]";
-    let fields = ["employee.rec_name", "employee.id", "employee.party.name",
-    "employee.party.id", "language.code", "company.id"];
+    let fields = ["employee.rec_name", "employee.id",
+			"language.code", "company.id"];
 
     json_constructor.addNode(method, domain, fields);
     let json = json_constructor.createJson();
@@ -106,6 +106,7 @@ export class TrytonLoginPage {
         this.navCtrl.push(MainMenuPage)
       },
       error => {
+				alert('Error al inciar session', )
         console.log("An error was encountered", error)
       })
 	}
