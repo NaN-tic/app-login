@@ -43,12 +43,13 @@ export class TrytonLoginPage {
    */
 	ionViewDidLoad() {
     	console.log('Login screen');
-        if (this.session_service.isLoggedIn()){
+			console.log()
+        if (this.locker.get('sessionId')){
             this.user_session = {
                 userId: this.locker.get('userId'),
                 sessionId: this.locker.get('sessionId'),
             }
-            //this.get_user_data();
+          	this.get_user_data();
         }
     }
 
@@ -67,8 +68,8 @@ export class TrytonLoginPage {
   			this.user_session = data;
   			this.user_session.database = this.database;
 			  console.log("User session", this.user_session);
-			  //this.get_user_data();
-			  this.navCtrl.push(MainMenuPage)
+			  this.get_user_data();
+			  //this.navCtrl.push(MainMenuPage)
 		  },
 		  err => {
 			  alert("Incorrect username or password")
