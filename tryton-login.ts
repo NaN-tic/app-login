@@ -8,8 +8,6 @@ import { EncodeJSONRead } from '../json/encode-json-read'
 import { User, UserSession } from '../../models/interfaces/user';
 import { Party } from '../../models/interfaces/party'
 import { Location } from '../../models/interfaces/location'
-// Pages
-import { MainMenuPage} from '../../pages/main-menu/main-menu'
 
 @Component({
 	selector: 'page-tryton-login',
@@ -69,7 +67,6 @@ export class TrytonLoginPage {
   			this.user_session.database = this.database;
 			  console.log("User session", this.user_session);
 			  this.get_user_data();
-			  //this.navCtrl.push(MainMenuPage)
 		  },
 		  err => {
 			  alert("Incorrect username or password")
@@ -104,8 +101,6 @@ export class TrytonLoginPage {
         console.log("Recived data", data);
         this.user = data[method];
         this.driver.set('UserData', this.user);
-        // Go to the menu
-        this.navCtrl.push(MainMenuPage)
       },
       error => {
 				alert('Error al inciar session', )
