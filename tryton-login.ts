@@ -62,6 +62,11 @@ export class TrytonLoginPage {
 		this.session_service.doLogin(this.database, username, password)
 		.subscribe(
   		data => {
+        if (data.constructor.name == "ErrorObservable"){
+          alert("Incorrect username or password");
+          console.log("An error ocurred");
+          return;
+        }          
   			console.log("Login correct", data);
   			this.user_session = data;
   			this.user_session.database = this.database;
@@ -81,7 +86,6 @@ export class TrytonLoginPage {
    * Gets the following data from the current user:
    * name, employee, employee party and language
    */
-  // TODO: Remove this and move it to company-specific files
 	public get_user_data(){
 		console.log("Getting user data for session")
 
