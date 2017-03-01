@@ -26,6 +26,7 @@ export class TrytonLoginPage {
     location_response: Location[];
     driver = this.locker.useDriver(Locker.DRIVERS.LOCAL)
 		database: string = ''
+		title: string = '';
 
 	constructor(
 		public session_service : SessionService,
@@ -66,7 +67,7 @@ export class TrytonLoginPage {
           alert("Incorrect username or password");
           console.log("An error ocurred");
           return;
-        }          
+        }
   			console.log("Login correct", data);
   			this.user_session = data;
   			this.user_session.database = this.database;
@@ -104,7 +105,8 @@ export class TrytonLoginPage {
       data => {
         console.log("Recived data", data);
         this.user = data[method];
-        this.driver.set('UserData', this.user);
+				console.log("this.user", this.user)
+        this.driver.set('UserData', this.user[0]);
       },
       error => {
 				alert('Error al inciar session', )
