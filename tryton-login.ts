@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Locker } from 'angular-safeguard';
 import { SessionService } from 'angular2-tryton';
 import { NavController } from 'ionic-angular';
+
+import { TranslateService } from 'ng2-translate';
 import { TrytonProvider } from '../providers/tryton-provider'
 import { EncodeJSONRead } from '../json/encode-json-read'
 // Models
@@ -32,9 +34,10 @@ export class TrytonLoginPage {
 		public session_service : SessionService,
 		public locker : Locker,
 		public tryton_provider: TrytonProvider,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+		public translate: TranslateService,
 		) {
-
+      translate.setDefaultLang('en');
     }
 
   /**
@@ -107,6 +110,9 @@ export class TrytonLoginPage {
         this.user = data[method];
 				console.log("this.user", this.user)
         this.driver.set('UserData', this.user[0]);
+				console.log("Using user language", this.user[0].language_code)
+				if (this.user[0].language_code)
+					this.translate.use(this.user[0].language_code);
       },
       error => {
 				alert('Error al inciar session', )
