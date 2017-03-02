@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Locker } from 'angular-safeguard';
 import { SessionService } from 'angular2-tryton';
-import { NavController } from 'ionic-angular';
+import { NavController, Events } from 'ionic-angular';
 
 import { TranslateService } from 'ng2-translate';
 import { TrytonProvider } from '../providers/tryton-provider'
@@ -36,7 +36,8 @@ export class TrytonLoginPage {
 		public locker : Locker,
 		public tryton_provider: TrytonProvider,
     public navCtrl: NavController,
-		public translate: TranslateService) {
+		public translate: TranslateService,
+		public events: Events) {
 			this.user = {
 				'employee.rec_name': '',
 				employee: -1,
@@ -120,6 +121,7 @@ export class TrytonLoginPage {
 				console.log("Using user language", this.user[0]['language.code'])
 				if (this.user[0].language_code)
 					this.translate.use(this.user[0]['language.code']);
+				this.events.publish('Data received');
       },
       error => {
 				alert('Error al inciar session', )
