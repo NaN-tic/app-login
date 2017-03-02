@@ -29,15 +29,24 @@ export class TrytonLoginPage {
     driver = this.locker.useDriver(Locker.DRIVERS.LOCAL)
 		database: string = ''
 		title: string = '';
+		fields: Array<string>;
 
 	constructor(
 		public session_service : SessionService,
 		public locker : Locker,
 		public tryton_provider: TrytonProvider,
     public navCtrl: NavController,
-		public translate: TranslateService,
-		) {
-      translate.setDefaultLang('en');
+		public translate: TranslateService) {
+			this.user = {
+				'employee.rec_name': '',
+				employee: -1,
+			  'employee.party.name': '',
+			  'employee.party': -1,
+			  'language.code': 'en',
+			  company: -1,
+			}
+			this.fields = Object.keys(this.user)
+      translate.setDefaultLang(this.user['language.code']);
     }
 
   /**
@@ -97,10 +106,8 @@ export class TrytonLoginPage {
     let userId = Number(this.user_session.userId);
     let method = "res.user";
     let domain = "[" + json_constructor.createDomain('id', '=', userId) + "]";
-    let fields = ["employee.rec_name", "employee.id",
-			"language.code", "company.id"];
 
-    json_constructor.addNode(method, domain, fields);
+    json_constructor.addNode(method, domain, this.fields);
     let json = json_constructor.createJson();
 
     this.tryton_provider.search(json)
@@ -110,9 +117,9 @@ export class TrytonLoginPage {
         this.user = data[method];
 				console.log("this.user", this.user)
         this.driver.set('UserData', this.user[0]);
-				console.log("Using user language", this.user[0].language_code)
+				console.log("Using user language", this.user[0]['language.code'])
 				if (this.user[0].language_code)
-					this.translate.use(this.user[0].language_code);
+					this.translate.use(this.user[0]['language.code']);
       },
       error => {
 				alert('Error al inciar session', )
