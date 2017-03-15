@@ -12,8 +12,8 @@ import { Party } from '../../models/interfaces/party'
 import { Location } from '../../models/interfaces/location'
 
 @Component({
-	selector: 'page-tryton-login',
-	templateUrl: 'login.html',
+  selector: 'page-tryton-login',
+  templateUrl: 'login.html',
 })
 /**
  * Login class for tryton.
@@ -22,48 +22,48 @@ import { Location } from '../../models/interfaces/location'
  */
 export class TrytonLoginPage {
 
-    user: User;
-    user_session: UserSession;
-    party_response: Party[];
-    location_response: Location[];
-    driver = this.locker.useDriver(Locker.DRIVERS.LOCAL)
-		database: string = ''
-		title: string = '';
-		fields: Array<string>;
+  user: User;
+  user_session: UserSession;
+  party_response: Party[];
+  location_response: Location[];
+  driver = this.locker.useDriver(Locker.DRIVERS.LOCAL)
+  database: string = ''
+  title: string = '';
+  fields: Array<string>;
 
-	constructor(
-		public session_service : SessionService,
-		public locker : Locker,
-		public tryton_provider: TrytonProvider,
+  constructor(
+    public session_service: SessionService,
+    public locker: Locker,
+    public tryton_provider: TrytonProvider,
     public navCtrl: NavController,
-		public translate: TranslateService,
-		public events: Events) {
-			this.user = {
-				'employee.rec_name': '',
-				employee: -1,
-			  'employee.party.name': '',
-			  'employee.party': -1,
-			  'language.code': 'en',
-			  company: -1,
-			}
-			this.fields = Object.keys(this.user)
-      translate.setDefaultLang(this.user['language.code']);
+    public translate: TranslateService,
+    public events: Events) {
+    this.user = {
+      'employee.rec_name': '',
+      employee: -1,
+      'employee.party.name': '',
+      'employee.party': -1,
+      'language.code': 'en',
+      company: -1,
     }
+    this.fields = Object.keys(this.user)
+    translate.setDefaultLang(this.user['language.code']);
+  }
 
-  /**
-   * Initialize the login page
-   */
-	ionViewDidLoad() {
-    	console.log('Login screen');
-			console.log()
-        if (this.locker.get('sessionId')){
-            this.user_session = {
-                userId: this.locker.get('userId'),
-                sessionId: this.locker.get('sessionId'),
-            }
-          	this.get_user_data();
-        }
-    }
+    /**
+     * Initialize the login page
+     */
+  	ionViewDidLoad() {
+	    console.log('Login screen');
+	    console.log()
+	    if (this.locker.get('sessionId')) {
+	      this.user_session = {
+	        userId: this.locker.get('userId'),
+	        sessionId: this.locker.get('sessionId'),
+	      }
+	      this.get_user_data();
+	    }
+	  }
 
   /**
    * Logs the user into the system
@@ -71,62 +71,62 @@ export class TrytonLoginPage {
    * @param {string} username username of the user
    * @param {string} password password of the user
    */
-	public login(event, username: string, password: string) {
-		console.log("Starting loggin procedure")
-		this.session_service.doLogin(this.database, username, password)
-		.subscribe(
-  		data => {
-        if (data.constructor.name == "ErrorObservable"){
+  public login(event, username: string, password: string) {
+    console.log("Starting loggin procedure")
+    this.session_service.doLogin(this.database, username, password)
+      .subscribe(
+      data => {
+        if (data.constructor.name == "ErrorObservable") {
           alert("Incorrect username or password");
           console.log("An error ocurred");
           return;
         }
-  			console.log("Login correct", data);
-  			this.user_session = data;
-  			this.user_session.database = this.database;
-			  console.log("User session", this.user_session);
-			  this.get_user_data();
-		  },
-		  err => {
-			  alert("Incorrect username or password")
-			  console.log("Incorrect username or password", err)
-		  },
-		  () => {
-			  console.log("Completed!")
-		  })
+        console.log("Login correct", data);
+        this.user_session = data;
+        this.user_session.database = this.database;
+        console.log("User session", this.user_session);
+        this.get_user_data();
+      },
+      err => {
+        alert("Incorrect username or password")
+        console.log("Incorrect username or password", err)
+      },
+      () => {
+        console.log("Completed!")
+      })
   }
 
   /**
    * Gets the following data from the current user:
    * name, employee, employee party and language
    */
-	public get_user_data(){
-		console.log("Getting user data for session")
+  public get_user_data() {
+    console.log("Getting user data for session")
 
     let json_constructor = new EncodeJSONRead;
     let userId = Number(this.user_session.userId);
     let method = "res.user";
-    let domain = "[" + json_constructor.createDomain('id', '=', userId) + "]";
+    let domain = [json_constructor.createDomain('id', '=', userId)];
 
     json_constructor.addNode(method, domain, this.fields);
     let json = json_constructor.createJson();
 
     this.tryton_provider.search(json)
-    .subscribe(
+      .subscribe(
       data => {
         console.log("Recived data", data);
         this.user = data[method];
-				console.log("this.user", this.user)
         this.driver.set('UserData', this.user[0]);
-				console.log("Using user language", this.user[0]['language.code'])
-				if (this.user[0].language_code)
-					this.translate.use(this.user[0]['language.code']);
-				this.events.publish('Data received');
+
+        console.log("Using user language", this.user[0]['language.code'])
+        if (this.user[0]['language.code'])
+          this.translate.use(this.user[0]['language.code']);
+        this.events.publish('Data received');
       },
       error => {
-				alert('Error al inciar session', )
+        alert('Error al inciar session', )
         console.log("An error was encountered", error)
       })
-	}
+  }
 
 }
