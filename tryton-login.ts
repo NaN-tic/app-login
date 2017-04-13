@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Locker } from 'angular-safeguard';
-import { SessionService } from 'angular2-tryton';
+import { SessionService } from 'angular2-tryton-4.0';
 import { NavController, Events } from 'ionic-angular';
 
 import { TranslateService } from 'ng2-translate';
