@@ -10,6 +10,7 @@ import { EncodeJSONRead } from '../json/encode-json-read'
 import { User, UserSession } from '../../models/interfaces/user';
 import { Party } from '../../models/interfaces/party'
 import { Location } from '../../models/interfaces/location'
+import { ConfigurationService } from '../../config/ConfigService';
 
 @Component({
   selector: 'page-tryton-login',
@@ -31,13 +32,28 @@ export class TrytonLoginPage {
   title: string = '';
   fields: Array<string>;
 
+  config;
+
   constructor(
     public session_service: SessionService,
     public locker: Locker,
     public tryton_provider: TrytonProvider,
     public navCtrl: NavController,
     public translate: TranslateService,
-    public events: Events) {
+    public events: Events,
+    public config_service: ConfigurationService, ) {
+
+    this.config_service.getConfiguration().subscribe(
+      data => {
+        this.config = data;
+        this.database = this.config.DatabaseName;
+        console.log("Got config", data)
+      },
+      error => {
+        console.log("Error", error)
+        alert('No config file found, create from the template in the config folder')
+      })
+
     this.user = {
       'employee.rec_name': '',
       employee: -1,
